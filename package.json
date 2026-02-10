@@ -1,0 +1,28 @@
+{
+  "name": "template-projeto-integrador",
+  "version": "1.0.0",
+  "description": "Um projeto completo de JS realizado para o curso de Programador Web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhDSouza/template-projeto-integrador.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/dhDSouza/template-projeto-integrador/issues"
+  },
+  "homepage": "https://github.com/dhDSouza/template-projeto-integrador#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "mysql2": "^3.16.3"
+  }
+}
