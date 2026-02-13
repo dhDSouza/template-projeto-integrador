@@ -1,38 +1,38 @@
 import { Usuario } from "../models/usuario.js"
 import { UsuarioRepository } from "../repositories/usuario-repository.js"
+import { UsuarioService } from "../services/usuario-service.js"
 
 export class UsuarioController {
 
     static async index(req, res) {
-        const usuarios = await UsuarioRepository.buscarTodos()
-        res.status(200).json(usuarios)
+        try {
+            const usuarios = await UsuarioService.exibirUsuarios()
+            res.status(200).json(usuarios)
+        } catch (error) {
+            res.status(error.statusCode).json({ messagem: error.message })
+        }
     }
 
     static async buscarPorId(req, res) {
-        const id = parseInt(req.params.id)
+        const { id } = req.params
 
-        const usuario = await UsuarioRepository.buscarPorId(id)
-
-        if (!usuario) {
-            res.status(404).send('Usuário não encontrado!')
-            return
+        try {
+            const usuario = await UsuarioService.exibirUsuario(id)
+            res.status(200).json(usuario)
+        } catch (error) {            
+            res.status(error.statusCode).send(error.message)
         }
-
-        res.status(200).json(usuario)
     }
 
     static async register(req, res) {
         const { nome, email, senha } = req.body;
 
-        if (!nome || !email || !senha) {
-            res.status(400).send('Todos os campos são obrigatórios!')
-            return
+        try {
+            const novoUsuario = await UsuarioService.registrarUsuario(nome, email, senha)
+            res.status(201).json(novoUsuario)
+        } catch (error) {
+            res.status(error.statusCode).send(error.message)
         }
-
-        const usuario = new Usuario(null, nome, email, senha)
-        const novoUsuario = await UsuarioRepository.inserirUsuario(usuario)
-
-        res.status(201).json(novoUsuario)
     }
 
     static async update(req, res) {

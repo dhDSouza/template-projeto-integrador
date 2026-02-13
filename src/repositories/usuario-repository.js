@@ -17,6 +17,15 @@ export class UsuarioRepository {
         return new Usuario(u.id, u.nome, u.email, u.senha)
     }
 
+    static async buscarPorEmail(email) {
+        const [result] = await conn.query('SELECT * FROM usuarios WHERE email = ?', [email])
+
+        if (result.length === 0) return null
+
+        const u = result[0]
+        return new Usuario(u.id, u.nome, u.email, u.senha)
+    }    
+
     static async inserirUsuario(usuario) {
         const { nome, email, senha } = usuario
 
