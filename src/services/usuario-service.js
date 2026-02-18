@@ -12,6 +12,7 @@ export class UsuarioService {
             throw new AppError('Nenhum usuário foi encontrado', 404)
         }
 
+        console.log(usuarios)
         return usuarios
     }
 
@@ -48,6 +49,64 @@ export class UsuarioService {
         const novoUsuario = await UsuarioRepository.inserirUsuario(usuario)
 
         return novoUsuario
+    }
+
+    static async login(email, senha) {
+
+        if (!email || !senha) {
+            throw new AppError('E-mail e senha são obrigatórios!', 400)
+        }
+
+        const usuario = await UsuarioRepository.buscarPorEmail(email)
+
+        if (!usuario) {
+            throw new AppError('Credenciais inválidas!', 401)
+        }
+
+        const passwordCheck = await bcrypt.compare(senha, usuario.senha)
+
+        if (!passwordCheck) {
+            throw new AppError('Credenciais inválidas!', 401)
+        }
+
+        return passwordCheck
+
+    }
+
+    static async update(id, nome, email, senha) {
+
+        if (isNaN(id)) {
+            throw new AppError('ID precisa ser um número!', 400)
+        }
+
+        if (!nome && !email && !senha) {
+            throw new AppError('É necessário informar ao menos um campo para alteração!', 400)
+        }
+
+        const usuarioExist = await UsuarioRepository.buscarPorId(parseInt(id))
+
+        if (!usuarioExist) {
+            throw new AppError('Usuário não encontrado!', 404)
+        }
+        
+        const emailExist = await UsuarioRepository.buscarPorEmail(email)
+        
+        if (emailExist) {
+            throw new AppError('Já existe um usuário com este email', 409)
+        }
+
+        nome = nome ?? usuarioExist.nome
+        email = email ?? usuarioExist.email
+        senha = senha ?? usuarioExist.senha
+
+        const usuarioAtualizado = await UsuarioRepository.atualizarUsuario(id, new Usuario(id, nome, email, senha))
+
+        if (!usuarioAtualizado) {
+            throw new AppError('Erro ao atualizar usuário', 500)
+        }
+
+        return usuarioAtualizado
+
     }
 
 }

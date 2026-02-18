@@ -5,34 +5,30 @@ import { UsuarioService } from "../services/usuario-service.js"
 export class UsuarioController {
 
     static async index(req, res) {
-        try {
-            const usuarios = await UsuarioService.exibirUsuarios()
-            res.status(200).json(usuarios)
-        } catch (error) {
-            res.status(error.statusCode).json({ messagem: error.message })
-        }
+        const usuarios = await UsuarioService.exibirUsuarios()
+        res.status(200).json(usuarios)
     }
 
     static async buscarPorId(req, res) {
         const { id } = req.params
 
-        try {
-            const usuario = await UsuarioService.exibirUsuario(id)
-            res.status(200).json(usuario)
-        } catch (error) {            
-            res.status(error.statusCode).send(error.message)
-        }
+        const usuario = await UsuarioService.exibirUsuario(id)
+        res.status(200).json(usuario)
     }
 
     static async register(req, res) {
         const { nome, email, senha } = req.body;
 
-        try {
-            const novoUsuario = await UsuarioService.registrarUsuario(nome, email, senha)
-            res.status(201).json(novoUsuario)
-        } catch (error) {
-            res.status(error.statusCode).send(error.message)
-        }
+        const novoUsuario = await UsuarioService.registrarUsuario(nome, email, senha)
+        res.status(201).json(novoUsuario)
+    }
+
+    static async login(req, res) {
+        const { email, senha } = req.body
+        
+        await UsuarioService.login(email, senha)
+
+        res.status(200).json({ message: 'Usuário logado com sucesso!' })
     }
 
     static async update(req, res) {
@@ -63,6 +59,6 @@ export class UsuarioController {
 
         res.status(204).send()
 
-    } 
+    }
 
 }
